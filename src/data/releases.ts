@@ -32,7 +32,9 @@ export interface Release {
   origin?: string;
   spotifyAlbum?: string; // full URL
   appleArtistId?: string;
-  cdbabyUrl?: string;
+  appleAlbumUrl?: string;
+  cdbabyUrl?: string; // NOTE: CD Baby retail store closed 2020 — existing store pages redirect
+                      // to login. Kept only when Kurt confirms a working URL; not rendered by default.
   youtubePlaylist?: string;
   tracks: Track[];
   archiveNote?: string;
@@ -57,6 +59,7 @@ export const RELEASES: Release[] = [
     origin: 'Michigan, USA',
     spotifyAlbum: 'https://open.spotify.com/album/2vElLNgHjcd2YhwdjPFpr4',
     appleArtistId: '1412438706',
+    appleAlbumUrl: 'https://music.apple.com/us/album/no-no-no-youre-the-algorithm/1412439374',
     youtubePlaylist: 'https://www.youtube.com/playlist?list=OLAK5uy_k8uUDzg2NCRhqGK-21_7jED6rMJyheaP8',
     tracks: [
       { no: 1, title: 'Machinations', duration: '02:56', isrc: 'ushm21890520', composer: `${KURT}, ${LEITELT}`, lyricist: 'Aurora Gaea Behling, Steven Michael Leitelt' },
@@ -83,6 +86,7 @@ export const RELEASES: Release[] = [
     soundsLike: ['Echo and the Bunnymen', 'Pixies', 'Yo La Tengo'],
     spotifyAlbum: 'https://open.spotify.com/album/3UZuaKvO8fd6FYZRgdkfdA',
     appleArtistId: '1337442047',
+    appleAlbumUrl: 'https://music.apple.com/us/album/that-fire-single/1337442046',
     tracks: [
       // Kurt ruled 2026-11-02: single credits = album version credits.
       { no: 1, title: 'That Fire', duration: '03:38', isrc: 'uscgh1829054', composer: KURT, lyricist: LEITELT },
@@ -102,7 +106,8 @@ export const RELEASES: Release[] = [
     soundsLike: ['Brian Eno', 'The Cure', 'Yo La Tengo'],
     spotifyAlbum: 'https://open.spotify.com/album/4BNjGUYWxbAnmmhIFDHNNU',
     appleArtistId: '1337442047',
-    cdbabyUrl: 'https://store.cdbaby.com/cd/elvischristsnake2',
+    appleAlbumUrl: 'https://music.apple.com/us/album/hey-come-down-from-there/1355240965',
+    // Legacy CD Baby store URL (store.cdbaby.com/cd/elvischristsnake2) is dead — retail store closed 2020.
     tracks: [
       { no: 1, title: 'Outside', duration: '03:32', isrc: 'uscgj1814947', composer: KURT, lyricist: LEITELT },
       { no: 2, title: 'That Fire', duration: '03:39', isrc: 'uscgj1814948', composer: KURT, lyricist: LEITELT },
@@ -176,7 +181,9 @@ export const RELEASES: Release[] = [
     soundsLike: ['Brian Eno', 'New Order', 'Radiohead', 'The Cure', 'TV on the Radio'],
     spotifyAlbum: 'https://open.spotify.com/album/5HfnIrpPLAGrI9nFV6aVqx',
     appleArtistId: '264473076',
-    cdbabyUrl: 'https://store.cdbaby.com/cd/stbuffaloblue',
+    appleAlbumUrl: 'https://music.apple.com/us/album/related-to-such-pretty-dolls/264473073',
+    // Legacy CD Baby store URL (store.cdbaby.com/cd/stbuffaloblue) is dead. Date note: CD Baby
+    // catalog record says released Jan 1, 2007; Spotify shows Aug 13, 2007 — flagged for Kurt.
     tracks: [
       { no: 1, title: 'Rise On', duration: '03:28', isrc: 'ushm90780829', composer: KURT, lyricist: LEITELT },
       { no: 2, title: 'Aurelius', duration: '03:53', isrc: 'ushm90780830', composer: KURT, lyricist: LEITELT },
@@ -206,7 +213,8 @@ export const RELEASES: Release[] = [
     soundsLike: ['Brian Eno', 'My Bloody Valentine', 'Pixies'],
     spotifyAlbum: 'https://open.spotify.com/album/1XZfckLVoPrOM8M0LbmTSz',
     appleArtistId: '264473076',
-    cdbabyUrl: 'https://store.cdbaby.com/cd/StBuffaloBlue1',
+    appleAlbumUrl: 'https://music.apple.com/us/album/trismegistus/551679743',
+    // Legacy CD Baby store URL (store.cdbaby.com/cd/StBuffaloBlue1) is dead.
     tracks: [
       { no: 1, title: 'Whispers from the Outer', duration: '02:53', isrc: 'ushm81253049', composer: KURT, lyricist: LEITELT },
       { no: 2, title: 'Your Golden Goals', duration: '04:36', isrc: 'ushm81253050', composer: KURT, lyricist: LEITELT },

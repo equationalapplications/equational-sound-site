@@ -45,10 +45,9 @@ const description = LABEL.description;
         {r.spotifyAlbum && (
           <div class="links">
             <a href={r.spotifyAlbum}>Listen on Spotify</a>
-            {r.appleArtistId && (
-              <a href={`https://music.apple.com/us/artist/${r.appleArtistId}`}>Apple Music</a>
+            {(r.appleAlbumUrl || r.appleArtistId) && (
+              <a href={r.appleAlbumUrl ?? `https://music.apple.com/us/artist/${r.appleArtistId}`}>Apple Music</a>
             )}
-            {r.cdbabyUrl && <a href={r.cdbabyUrl}>CD Baby</a>}
           </div>
         )}
       </li>

@@ -109,8 +109,10 @@ const lyrics = artist.slug === 'diamond-84' ? DIAMOND84_LYRICS : null;
             )}
             <div class="links">
               {r.spotifyAlbum && <a href={r.spotifyAlbum}>Spotify</a>}
-              {r.appleArtistId && <a href={`https://music.apple.com/us/artist/${r.appleArtistId}`}>Apple Music</a>}
-              {r.cdbabyUrl && <a href={r.cdbabyUrl}>CD Baby</a>}
+              {r.appleAlbumUrl && <a href={r.appleAlbumUrl}>Apple Music</a>}
+              {!r.appleAlbumUrl && r.appleArtistId && (
+                <a href={`https://music.apple.com/us/artist/${r.appleArtistId}`}>Apple Music</a>
+              )}
               {r.youtubePlaylist && <a href={r.youtubePlaylist}>YouTube</a>}
             </div>
           </li>
