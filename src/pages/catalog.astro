@@ -5,6 +5,7 @@
 import Base from '../layouts/Base.astro';
 import { LABEL } from '../data/label';
 import { RELEASES, ARCHIVE_ITEMS, type Release } from '../data/releases';
+import { BASE } from '../lib/base';
 
 const ordered = [...RELEASES].sort((a, b) => b.released.localeCompare(a.released));
 const archive = [...ARCHIVE_ITEMS].sort((a, b) => a.artistName.localeCompare(b.artistName));
@@ -42,7 +43,7 @@ const description = 'The Equational Sound catalog: every release by Diamond 84, 
       <li class="release" data-artist={r.artistName}>
         <span class="title">{r.title}</span> —
         {r.artistSlug ? (
-          <a href={`${import.meta.env.BASE_URL}/artists/${r.artistSlug}/`}>{r.artistName}</a>
+          <a href={`${BASE}/artists/${r.artistSlug}/`}>{r.artistName}</a>
         ) : (
           <strong>{r.artistName}</strong>
         )}
