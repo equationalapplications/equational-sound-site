@@ -1,0 +1,37 @@
+---
+// About / Contact — label story + press/booking contact line.
+import Base from '../layouts/Base.astro';
+import { LABEL } from '../data/label';
+
+const title = `About — ${LABEL.name}`;
+const description =
+  'About Equational Sound: an independent record label based in Grand Rapids, Michigan. Home of Diamond 84, Elvis Christ Snake, St. Buffalo Blue, and Oh, Blue. Press and booking contact.';
+---
+
+<Base title={title} description={description}>
+  <h1>About {LABEL.name}</h1>
+  <p class="lede">
+    {LABEL.name} is an independent record label based in Grand Rapids, Michigan.
+  </p>
+  <p>
+    The label exists to put its artists' music where listeners can find it — every release
+    streams worldwide on Spotify, Apple Music, Amazon Music, and 20+ other platforms, with
+    physical downloads available through CD Baby. The catalog spans psychedelic art rock
+    (Diamond 84), dreamy experimental rock (Elvis Christ Snake, St. Buffalo Blue), ambient
+    electronics (Krtra), and art pop (Eden Oz), with new music from Oh, Blue on the way.
+  </p>
+  <p>
+    The label's first website launched in the 2010s; this site is its successor — a permanent,
+    citable home for the roster and the full release catalog.
+  </p>
+
+  <h2>Contact</h2>
+  <p>{LABEL.contact.line}</p>
+  {LABEL.contact.email && <p>Email: <a href={`mailto:${LABEL.contact.email}`}>{LABEL.contact.email}</a></p>}
+
+  <h2>Elsewhere</h2>
+  <ul>
+    <li><a href={LABEL.socials.facebook}>facebook.com/equationalsound</a></li>
+    <li><a href={LABEL.socials.youtube}>youtube.com/user/EquationalSound</a></li>
+  </ul>
+</Base>

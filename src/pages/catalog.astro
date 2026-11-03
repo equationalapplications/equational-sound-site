@@ -1,0 +1,89 @@
+---
+// Catalog — every release across the label, filterable by artist (client-side), each
+// linking out to stream/buy. Includes krtRa and Eden Oz releases (catalog-only, D17)
+// and the legacy free-MP3 archive items.
+import Base from '../layouts/Base.astro';
+import { LABEL } from '../data/label';
+import { RELEASES, ARCHIVE_ITEMS, type Release } from '../data/releases';
+
+const ordered = [...RELEASES].sort((a, b) => b.released.localeCompare(a.released));
+const archive = [...ARCHIVE_ITEMS].sort((a, b) => a.artistName.localeCompare(b.artistName));
+
+function albumJsonLd(r: Release) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'MusicAlbum',
+    name: r.title,
+    byArtist: { '@type': 'MusicGroup', name: r.artistName },
+    datePublished: r.released,
+    genre: r.genres,
+    numTracks: r.tracks.length,
+    ...(r.spotifyAlbum ? { url: r.spotifyAlbum } : {}),
+  };
+}
+
+const title = `Catalog — ${LABEL.name}`;
+const description = 'The Equational Sound catalog: every release by Diamond 84, Elvis Christ Snake, St. Buffalo Blue, Krtra, Eden Oz, and label archive items, with links to stream or buy.';
+---
+
+<Base title={title} description={description} jsonLd={ordered.map(albumJsonLd)}>
+  <h1>Catalog</h1>
+  <p class="lede">Every Equational Sound release. Filter by artist, follow a link to stream or buy.</p>
+
+  <div class="filters" role="group" aria-label="Filter releases by artist">
+    <button class="filter-btn" data-artist="all" aria-pressed="true">All</button>
+    {[...new Set(ordered.map((r) => r.artistName))].map((name) => (
+      <button class="filter-btn" data-artist={name} aria-pressed="false">{name}</button>
+    ))}
+  </div>
+
+  <ul class="release-list" id="catalog-list">
+    {ordered.map((r) => (
+      <li class="release" data-artist={r.artistName}>
+        <span class="title">{r.title}</span> —
+        {r.artistSlug ? (
+          <a href={`${import.meta.env.BASE_URL}/artists/${r.artistSlug}/`}>{r.artistName}</a>
+        ) : (
+          <strong>{r.artistName}</strong>
+        )}
+        <div class="meta">
+          {r.type}, {r.releasedDisplay} · {r.tracks.length} track{r.tracks.length === 1 ? '' : 's'} · {r.genres.join(', ')}
+        </div>
+        <div class="links">
+          {r.spotifyAlbum && <a href={r.spotifyAlbum}>Spotify</a>}
+          {r.appleArtistId && <a href={`https://music.apple.com/us/artist/${r.appleArtistId}`}>Apple Music</a>}
+          {r.cdbabyUrl && <a href={r.cdbabyUrl}>CD Baby</a>}
+          {r.youtubePlaylist && <a href={r.youtubePlaylist}>YouTube</a>}
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  <h2>Archive — legacy free downloads</h2>
+  <p class="lede">
+    Tracks once offered as free MP3 downloads on the label's first website. The original
+    download files are being recovered; these are listed for the record.
+  </p>
+  <ul class="release-list">
+    {archive.map((a) => (
+      <li class="release">
+        <span class="title">{a.title}</span> — {a.artistName}
+        <div class="meta">{a.note}</div>
+      </li>
+    ))}
+  </ul>
+</Base>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items = document.querySelectorAll<HTMLElement>('#catalog-list .release');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const artist = btn.dataset.artist ?? 'all';
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      items.forEach((el) => {
+        el.style.display = artist === 'all' || el.dataset.artist === artist ? '' : 'none';
+      });
+    });
+  });
+</script>

@@ -1,0 +1,147 @@
+---
+// Artist page template — one page per band, rendered from src/data (D5/D6: drafts from
+// researched data; Kurt reviews before publish).
+// JSON-LD: MusicGroup with album list per band (D12).
+import Base from '../../layouts/Base.astro';
+import { LABEL } from '../../data/label';
+import { ARTISTS } from '../../data/artists';
+import { RELEASES, type Release } from '../../data/releases';
+import { DIAMOND84_LYRICS } from '../../data/lyrics-diamond-84';
+
+export function getStaticPaths() {
+  return ARTISTS.map((artist) => ({ params: { slug: artist.slug }, props: { artist } }));
+}
+
+const { artist } = Astro.props;
+const releases = RELEASES.filter((r) => r.artistSlug === artist.slug);
+
+const appleArtistId = releases.find((r) => r.appleArtistId)?.appleArtistId;
+const musicGroupJsonLd: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'MusicGroup',
+  name: artist.name,
+  description: artist.bio,
+  genre: [...new Set(releases.flatMap((r) => r.genres))],
+  ...(releases.length > 0 ? { album: releases.map((r) => albumJsonLd(r)) } : {}),
+  ...(appleArtistId ? { sameAs: [`https://music.apple.com/us/artist/${appleArtistId}`] } : {}),
+  recordLabel: { '@type': 'Organization', name: LABEL.name, url: LABEL.canonicalUrl },
+};
+
+function albumJsonLd(r: Release) {
+  return {
+    '@type': 'MusicAlbum',
+    name: r.title,
+    datePublished: r.released,
+    genre: r.genres,
+    numTracks: r.tracks.length,
+    ...(r.upc ? { isbn: r.upc } : {}),
+    ...(r.spotifyAlbum ? { url: r.spotifyAlbum } : {}),
+    track: r.tracks.map((t) => ({
+      '@type': 'MusicRecording',
+      name: t.title,
+      duration: `PT${t.duration.slice(0, 2)}M${t.duration.slice(3, 5)}S`,
+      byArtist: { '@type': 'MusicGroup', name: r.artistName },
+    })),
+  };
+}
+
+const title = `${artist.name} — ${LABEL.name}`;
+const description = artist.bio.length > 160 ? artist.bio.slice(0, 157).trimEnd() + '…' : artist.bio;
+const lyrics = artist.slug === 'diamond-84' ? DIAMOND84_LYRICS : null;
+---
+
+<Base title={title} description={description} jsonLd={[musicGroupJsonLd]}>
+  <h1>{artist.name}</h1>
+  <p class="lede">{artist.bio}</p>
+
+  {artist.bioDetail && artist.bioDetail.map((p) => <p>{p}</p>)}
+
+  {artist.placeholder && (
+    <aside class="placeholder-note">
+      <strong>Placeholder page.</strong> Oh, Blue joins the Equational Sound roster with new
+      music on the way. A full bio and release details will appear here when the first release
+      is announced.
+    </aside>
+  )}
+
+  {artist.members && (
+    <section>
+      <h2>Members</h2>
+      <p>{artist.members.join(' · ')}</p>
+      {artist.guestNote && <p class="meta">{artist.guestNote}</p>}
+    </section>
+  )}
+
+  {releases.length > 0 && (
+    <section>
+      <h2>Releases</h2>
+      <ul class="release-list">
+        {releases.map((r) => (
+          <li class="release">
+            <span class="title">{r.title}</span>
+            <span class="meta"> ({r.type}, {r.releasedDisplay})</span>
+            <div class="meta">
+              {r.genres.join(', ')}
+              {r.soundsLike.length > 0 && <> · for fans of {r.soundsLike.join(', ')}</>}
+            </div>
+            {r.tracks.length > 1 && (
+              <details>
+                <summary>Track listing ({r.tracks.length} tracks)</summary>
+                <table class="tracklist">
+                  <thead>
+                    <tr><th scope="col">#</th><th scope="col">Title</th><th scope="col">Length</th><th scope="col">Credits</th></tr>
+                  </thead>
+                  <tbody>
+                    {r.tracks.map((t) => (
+                      <tr>
+                        <td>{t.no}</td>
+                        <td>{t.title}{t.instrumental && <span class="meta"> (instrumental)</span>}</td>
+                        <td>{t.duration}</td>
+                        <td class="meta">
+                          {t.composer && <>Music: {t.composer}</>}
+                          {t.lyricist && <>; Lyrics: {t.lyricist}</>}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </details>
+            )}
+            <div class="links">
+              {r.spotifyAlbum && <a href={r.spotifyAlbum}>Spotify</a>}
+              {r.appleArtistId && <a href={`https://music.apple.com/us/artist/${r.appleArtistId}`}>Apple Music</a>}
+              {r.cdbabyUrl && <a href={r.cdbabyUrl}>CD Baby</a>}
+              {r.youtubePlaylist && <a href={r.youtubePlaylist}>YouTube</a>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {artist.links.length > 0 && (
+    <section>
+      <h2>Find {artist.name} on</h2>
+      <ul class="links-list">
+        {artist.links.map((l) => (
+          <li><a href={l.url} rel="noopener">{l.label}{!l.verified && ' *'}</a></li>
+        ))}
+      </ul>
+      {artist.links.some((l) => !l.verified) && (
+        <p class="meta">* Link pending verification — flagged for review before launch.</p>
+      )}
+    </section>
+  )}
+
+  {lyrics && (
+    <section>
+      <h2>Lyrics — No No No You're the Algorithm</h2>
+      {lyrics.map((l) => (
+        <div class="lyric">
+          <h3>{l.title}</h3>
+          <pre>{l.text.join('\n')}</pre>
+        </div>
+      ))}
+    </section>
+  )}
+</Base>

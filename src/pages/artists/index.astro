@@ -1,0 +1,30 @@
+---
+// Artists index — the roster (D8: four full pages; krtRa / Eden Oz are catalog-only).
+import Base from '../../layouts/Base.astro';
+import { LABEL } from '../../data/label';
+import { ARTISTS } from '../../data/artists';
+import { RELEASES } from '../../data/releases';
+
+const title = `Artists — ${LABEL.name}`;
+const description = 'Artists on Equational Sound, an independent record label based in Grand Rapids, Michigan: Diamond 84, Elvis Christ Snake, St. Buffalo Blue, and Oh, Blue.';
+
+function releaseCount(slug: string): string {
+  const n = RELEASES.filter((r) => r.artistSlug === slug).length;
+  if (n === 0) return 'First release on the way';
+  return `${n} release${n === 1 ? '' : 's'}`;
+}
+---
+
+<Base title={title} description={description}>
+  <h1>Artists</h1>
+  <p class="lede">The Equational Sound roster.</p>
+  <ul class="cards">
+    {ARTISTS.map((a) => (
+      <li class="card">
+        <h2><a href={`${import.meta.env.BASE_URL}/artists/${a.slug}/`}>{a.name}</a></h2>
+        <p class="meta">{releaseCount(a.slug)}</p>
+        <p>{a.bio.split('. ').slice(0, 1).join('. ')}.</p>
+      </li>
+    ))}
+  </ul>
+</Base>

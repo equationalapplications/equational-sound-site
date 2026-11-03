@@ -1,0 +1,91 @@
+---
+// Base layout: unique title + meta description per page, canonical URL, Open Graph,
+// JSON-LD via the `jsonLd` prop (array of objects), GA4 placeholder wired at cutover (D13).
+import '../styles/global.css';
+import { LABEL } from '../data/label';
+
+export interface Props {
+  title: string;
+  description: string;
+  jsonLd?: object[];
+}
+
+const { title, description, jsonLd = [] } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+// BASE_URL has no trailing slash ('/equational-sound-site'); normalize so link joins are correct.
+const siteBase = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : import.meta.env.BASE_URL + '/';
+
+// GA4 (D13): set PUBLIC_GA4_MEASUREMENT_ID as a repo Actions variable once Kurt creates
+// the property at cutover. Until then no analytics tag is emitted.
+const ga4Id = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID;
+
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: LABEL.name,
+  description: LABEL.description,
+  url: LABEL.canonicalUrl,
+  sameAs: [LABEL.socials.facebook, LABEL.socials.youtube],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={LABEL.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <link rel="sitemap" href={`${siteBase}sitemap-index.xml`} />
+    {jsonLd.length > 0 && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+    {ga4Id && (
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} />
+    )}
+    {ga4Id && (
+      <script is:inline define:vars={{ ga4Id }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', ga4Id);
+      </script>
+    )}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="site-header">
+      <div class="inner">
+        <p class="site-title"><a href={siteBase}>{LABEL.name}</a></p>
+        <nav class="site-nav" aria-label="Main">
+          <a href={`${siteBase}artists/`}>Artists</a>
+          <a href={`${siteBase}catalog/`}>Catalog</a>
+          <a href={`${siteBase}about/`}>About</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="inner">
+        <p>
+          {LABEL.name} — {LABEL.tagline}<br />
+          <a href={LABEL.socials.facebook}>Facebook</a> ·
+          <a href={LABEL.socials.youtube}>YouTube</a>
+        </p>
+      </div>
+    </footer>
+    {/* Organization JSON-LD on every page: the label brand home is the citable entity (D3). */}
+    <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
+  </body>
+</html>

@@ -1,0 +1,58 @@
+---
+// Home — label brand home FIRST (D3): what the label is, roster at a glance, latest releases.
+import Base from '../layouts/Base.astro';
+import { LABEL } from '../data/label';
+import { ARTISTS } from '../data/artists';
+import { RELEASES } from '../data/releases';
+
+const latest = [...RELEASES]
+  .filter((r) => r.type !== 'archive')
+  .sort((a, b) => b.released.localeCompare(a.released))
+  .slice(0, 3);
+
+const title = `${LABEL.name} — Independent Record Label, Grand Rapids, Michigan`;
+const description = LABEL.description;
+---
+
+<Base title={title} description={description}>
+  <h1>{LABEL.name}</h1>
+  <p class="lede">
+    Independent record label based in Grand Rapids, Michigan. Psychedelic, experimental, and
+    art rock — self crafted with love and care.
+  </p>
+
+  <h2>Artists</h2>
+  <ul class="cards">
+    {ARTISTS.map((a) => (
+      <li class="card">
+        <h3><a href={`${import.meta.env.BASE_URL}/artists/${a.slug}/`}>{a.name}</a></h3>
+        <p class="meta">
+          {a.placeholder
+            ? 'New band — first release on the way.'
+            : a.bio.split('. ').slice(1).join('. ').replace(/\.$/, '')}
+        </p>
+      </li>
+    ))}
+  </ul>
+
+  <h2>Latest releases</h2>
+  <ul class="release-list">
+    {latest.map((r) => (
+      <li class="release">
+        <span class="title">{r.title}</span>
+        — {r.artistName}
+        <div class="meta">{r.releasedDisplay} · {r.genres.join(', ')}</div>
+        {r.spotifyAlbum && (
+          <div class="links">
+            <a href={r.spotifyAlbum}>Listen on Spotify</a>
+            {r.appleArtistId && (
+              <a href={`https://music.apple.com/us/artist/${r.appleArtistId}`}>Apple Music</a>
+            )}
+            {r.cdbabyUrl && <a href={r.cdbabyUrl}>CD Baby</a>}
+          </div>
+        )}
+      </li>
+    ))}
+  </ul>
+  <p><a href={`${import.meta.env.BASE_URL}/catalog/`}>Browse the full catalog →</a></p>
+</Base>

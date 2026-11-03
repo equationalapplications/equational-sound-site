@@ -1,0 +1,17 @@
+{
+  "name": "equational-sound-site",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Website for Equational Sound, an independent record label based in Grand Rapids, Michigan. Astro static site deployed to GitHub Pages.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^5.1.0"
+  }
+}
