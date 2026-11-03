@@ -23,6 +23,9 @@ jobs:
       # and SITE_BASE=/equational-sound-site and delete public/CNAME.
       SITE_ORIGIN: https://equationalsound.com
       SITE_BASE: /
+      # GA4 (D13; property created 2026-11-03 by Kurt — account 414495970,
+      # property 562069071, web stream 16259400466 for https://equationalsound.com)
+      PUBLIC_GA4_MEASUREMENT_ID: G-77HXWT09MH
     steps:
       - name: Checkout
         uses: actions/checkout@v4
