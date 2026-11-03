@@ -18,10 +18,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # Staging origin/base. AT CUTOVER change SITE_ORIGIN to https://equationalsound.com
-      # and SITE_BASE to / and add the CNAME file to public/ (custom domain, D11).
-      SITE_ORIGIN: https://equationalapplications.github.io
-      SITE_BASE: /equational-sound-site
+      # CUTOVER (2026-11-03, Kurt-approved): custom domain, root base.
+      # To revert to staging: SITE_ORIGIN=https://equationalapplications.github.io
+      # and SITE_BASE=/equational-sound-site and delete public/CNAME.
+      SITE_ORIGIN: https://equationalsound.com
+      SITE_BASE: /
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://equationalapplications.github.io/equational-sound-site/sitemap-index.xml
+Sitemap: https://equationalsound.com/sitemap-index.xml
